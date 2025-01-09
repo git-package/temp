@@ -1,41 +1,30 @@
-(function() {
-    // Create a div to display FPS and frame time
-    const statsDiv = document.createElement('div');
-    statsDiv.style.position = 'fixed';
-    statsDiv.style.top = '10px';
-    statsDiv.style.right = '10px';
-    statsDiv.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
-    statsDiv.style.color = 'white';
-    statsDiv.style.padding = '10px';
-    statsDiv.style.borderRadius = '5px';
-    statsDiv.style.zIndex = '10000';
-    statsDiv.style.fontFamily = 'Arial, sans-serif';
-    statsDiv.style.fontSize = '14px';
-    document.body.appendChild(statsDiv);
+let lastFrameTime = 0;
+let fps = 0;
 
-    let lastTime = performance.now();
-    let frameCount = 0;
-    let fps = 0;
-    let frameTime = 0;
+function calculateFPS() {
+    const currentTime = performance.now();
+    const deltaTime = currentTime - lastFrameTime;
+    lastFrameTime = currentTime;
+    fps = Math.round(1000 / deltaTime);
+}
+
+function displayFPS() {
+    const fpsElement = document.createElement('div');
+    fpsElement.style.position = 'absolute';
+    fpsElement.style.top = '10px';
+    fpsElement.style.left = '10px';
+    fpsElement.style.color = 'white';
+    fpsElement.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+    fpsElement.style.padding = '5px';
+    document.body.appendChild(fpsElement);
 
     function update() {
-        const currentTime = performance.now();
-        frameCount++;
-        frameTime = currentTime - lastTime;
-        lastTime = currentTime;
-
-        // Calculate FPS
-        if (frameCount >= 60) {
-            fps = Math.round(1000 / (frameTime / frameCount));
-            frameCount = 0;
-        }
-
-        // Update the display
-        statsDiv.innerHTML = `FPS: ${fps}<br>Frame Time: ${frameTime.toFixed(2)} ms`;
-
+        calculateFPS();
+        fpsElement.textContent = `FPS: ${fps}`;
         requestAnimationFrame(update);
     }
 
-    // Start the update loop
-    requestAnimationFrame(update);
-})();
+    update();
+}
+
+displayFPS();
